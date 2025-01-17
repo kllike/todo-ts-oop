@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getTodos = exports.createTodo = void 0;
+exports.updateTodo = exports.getTodos = exports.createTodo = void 0;
 const todo_1 = require("../models/todo");
 const todos = [];
 const createTodo = (req, res, next) => {
@@ -10,7 +10,7 @@ const createTodo = (req, res, next) => {
         todos.push(newTodo);
         res.status(201).json({
             message: 'Created new todo',
-            createdTask: newTodo
+            createdTask: newTodo,
         });
     }
     catch (error) {
@@ -21,7 +21,7 @@ exports.createTodo = createTodo;
 const getTodos = (req, res, next) => {
     try {
         res.status(201).json({
-            task: todos
+            tasks: todos
         });
     }
     catch (error) {
@@ -29,3 +29,22 @@ const getTodos = (req, res, next) => {
     }
 };
 exports.getTodos = getTodos;
+const updateTodo = (req, res, next) => {
+    try {
+        const todoId = req.params.id;
+        const updatedTask = req.body.task;
+        const todoIndex = todos.findIndex(todo => todo.id === todoId);
+        if (todoIndex < 0) {
+            throw new Error('Could not find todo with such id');
+        }
+        todos[todoIndex] = new todo_1.Todo(todos[todoIndex].id, updatedTask);
+        res.status(201).json({
+            message: 'Todo is updated!',
+            updatedTask: todos[todoIndex]
+        });
+    }
+    catch (error) {
+        console.log(error);
+    }
+};
+exports.updateTodo = updateTodo;
